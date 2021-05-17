@@ -1,0 +1,63 @@
+﻿<UserControl xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"  x:Class="DesktopClient.Views.MotorsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:rules="clr-namespace:DesktopClient.ValidationRules"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:DesktopClient.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="150" Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition MinWidth="150" Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="5,5,5,5" Orientation="Vertical" Grid.Column="0">
+            <materialDesign:Card Background="{StaticResource MaterialDesignChipBackground}">
+                <StackPanel Orientation="Horizontal" Margin="2">
+                    <TextBlock Text="Select a motor to view characteristics" Foreground="{StaticResource PrimaryHueLightBrush}"/>
+                    <Button x:Name="AddMotorBtn" Content="+" Margin="30,0,0,0" Style="{DynamicResource MaterialDesignFloatingActionDarkButton}" 
+                        Background="{StaticResource AdditionalAccentBrush}" Height="30" Width="30" FontSize="25" 
+                        FontFamily="Arial Black" ToolTip="Add a new motor" BorderBrush="{x:Null}" Command="{Binding showMotorFormCommand}"/>
+                    <Button x:Name="RefreshDataBtn" Margin="5,0,0,0" Style="{DynamicResource MaterialDesignFloatingActionButton}"
+                            Height="30" Width="30" ToolTip="Refresh data set" BorderBrush="{x:Null}" Command="{Binding refreshDataCommand}" Background="{x:Null}">
+                        <Image Source="/Resources/refresh.png" />
+                    </Button>
+                </StackPanel>
+            </materialDesign:Card>
+            <materialDesign:Card Background="{StaticResource MaterialDesignChipBackground}" Margin="0,2,0,0">
+                <ListView x:Name="MotorsListView" ItemsSource="{Binding Motors}" SelectedItem="{Binding SelectedMotor}"
+                     ItemTemplate="{StaticResource listBoxTemplate}" SelectionChanged="MotorsListView_SelectionChanged"/>
+            </materialDesign:Card>
+        </StackPanel>
+
+        <StackPanel x:Name="MotorCharacteristicsPanel" Margin="5,2,5,5" Orientation="Vertical" Grid.Column="2" Visibility="Hidden">
+            <materialDesign:Card x:Name="MotorCharacteristicsCard" Background="{StaticResource MaterialDesignChipBackground}" Margin="0,2,0,0">
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <TextBlock Text="Selected Motor Characteristics" Foreground="{StaticResource PrimaryHueLightBrush}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Motor name" Width="200" Style="{StaticResource TxtBlockStyle}" />
+                        <TextBox Style="{StaticResource TextBoxStyle}">
+                            <TextBox.Text>
+                                <Binding Path="Name" UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <rules:TextValidation typeIndex="{x:Type sys:Nullable}"/>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <StackPanel x:Name="MotorPropertiesPanel" Orientation="Vertical"/>
+                </StackPanel>
+            </materialDesign:Card>
+            <StackPanel x:Name="ButtonsPanel" Orientation="Horizontal" Margin="0,20,0,0">
+                <Button x:Name="SaveBtn" Content="Save Changes" Command="{Binding saveMotorChangesCommand}" CommandParameter="{Binding SelectedMotor}"/>
+                <Button x:Name="DeleteBtn" Content="Delete motor" Margin="5,0,0,0" Background="{StaticResource SecondaryAccentBrush}"
+                Command="{Binding deleteMotorCommand}" CommandParameter="{Binding SelectedMotor.Id}"/>
+            </StackPanel>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

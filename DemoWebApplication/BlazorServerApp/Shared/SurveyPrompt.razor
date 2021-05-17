@@ -1,0 +1,14 @@
+﻿<div class="alert-info alert-secondary mt-4" role="alert">
+    <span class="oi oi-info mr-2" aria-hidden="true"></span>
+    <strong>@Title</strong>
+    <p>@Info</p>
+
+</div>
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public string Info { get; set; }
+}

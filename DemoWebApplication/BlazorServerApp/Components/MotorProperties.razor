@@ -1,0 +1,29 @@
+﻿<div>
+    <table class="table-responsive-sm">
+        <tr class="border-bottom">
+            <td><label for="Name" class="badge badge-secondary" style="font-size: 15px">Name</label></td>
+            <td><input type="text" @bind-value="@motorValidationModel.Name" placeholder="Enter Motor name"/></td>
+        </tr>
+        
+        @if (selectedMotor.Characteristics is not null)
+        {
+
+            @foreach (var caracteristic in selectedMotor.Characteristics)
+            {
+            <tr class="border-bottom">
+                <td><span class="badge badge-secondary" style="font-size: 15px">@caracteristic.MotorProperty.Name</span></td>
+                <td><input type="number" min="0" step="0.1" @bind-value="@caracteristic.Value" /></td>
+            </tr>
+            }
+        }
+    </table>
+</div>
+
+@code {
+
+    [Parameter]
+    public Motor selectedMotor { get; set; }
+    [Parameter]
+    public MotorModel motorValidationModel { get; set; }
+
+}
