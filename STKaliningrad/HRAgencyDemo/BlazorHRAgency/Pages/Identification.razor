@@ -1,0 +1,79 @@
+﻿@page "/Identification"
+@attribute [Authorize]
+@inject UserManager<EmployeeIdentity> UserManager
+@inject IHttpClientFactory httpClientFactory
+@inject NavigationManager NavigationManager
+
+
+@if (!IsEmployed)
+{
+    <h3>We don't recognize you!</h3>
+    <p>Please, fill the following information:</p>
+    <EditForm Model="@employeeModel" OnValidSubmit="@(async () => await CreateEmployee())">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="modal-body justify-content-center">
+            <div class="form-group">
+                <div class="row" style="margin-left:1px">
+                    <label for="Type" class="badge badge-secondary" style="font-size: 15px">Group</label>
+                    <input type="text" @bind-value="@employeeModel.Group" style="visibility:hidden; width:1px" />
+                    <select class="form-control" style="width:200px" @bind="@employeeModel.Group">
+                        @foreach (var item in Templates)
+                        {
+                            <option value=@item>@item</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="EmployedDate" class="badge badge-secondary" style="font-size: 15px">Employed</label>
+                <input type="date" @bind-value="@employeeModel.EmployedDate" style="margin-left:1px" />
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <input type="submit" class="btn btn-primary" data-dismiss="modal" value="Save changes" />
+        </div>
+    </EditForm>
+}
+else
+{
+   NavigationManager.NavigateTo("/");
+}
+
+
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
+
+    UserManager<EmployeeIdentity> userManager { get; set; }
+    private AuthenticationState userState;
+    private EmployeeIdentity user;
+    private IHttpClientFactory _httpClientFactory;
+    private HttpClient httpClient;
+    private hrClient client;
+    private bool IsEmployed;
+
+    private Data.EmployeeModel employeeModel { get; set; } = new();
+    private List<string> Templates => Enum.GetNames(typeof(EmployeeGroup)).ToList();
+
+    protected async override Task OnInitializedAsync()
+    {
+        userManager = UserManager;
+        userState = await authState;
+        _httpClientFactory = httpClientFactory;
+        httpClient = _httpClientFactory.CreateClient("hrAPI");
+        client = new hrClient("", httpClient);
+
+        user = await userManager.FindByNameAsync(userState.User.Identity.Name);
+        employeeModel.Name = user.Name;
+        IsEmployed = (await client.GetAllEmplyeesAsync()).Any(e => e.Name == user.Name);
+    }
+
+    private async Task CreateEmployee()
+    {
+        var e = await client.AddEmployeeAsync(user.Name, employeeModel.Group, employeeModel.EmployedDate);
+        NavigationManager.NavigateTo($"/{e.Id}");
+    }
+}

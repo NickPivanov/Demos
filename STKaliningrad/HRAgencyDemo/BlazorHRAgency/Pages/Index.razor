@@ -1,0 +1,60 @@
+﻿@page "/"
+@inject UserManager<EmployeeIdentity> UserManager
+@inject IHttpClientFactory httpClientFactory
+
+<div class="badge-primary">
+    <h1>HR Agency app</h1>
+
+</div>
+
+
+<AuthorizeView>
+    <Authorized>
+        <a href="/salary/@id">Salary information</a>
+        <br />
+        <a href="/rolemanagement">Users administration</a>
+    </Authorized>
+    <NotAuthorized>
+        Log in or register to view the information
+    </NotAuthorized>
+</AuthorizeView>
+
+@code{
+
+    private int id { set; get; }
+    AppState appState = new();
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
+
+    UserManager<EmployeeIdentity> userManager { get; set; }
+    private AuthenticationState userState;
+    private EmployeeIdentity user;
+    private IHttpClientFactory _httpClientFactory;
+    private HttpClient httpClient;
+    private hrClient client;
+
+    protected override async Task OnInitializedAsync()
+    {
+        userManager = UserManager;
+        userState = await authState;
+        _httpClientFactory = httpClientFactory;
+        httpClient = _httpClientFactory.CreateClient("hrAPI");
+        client = new hrClient("", httpClient);
+
+        appState.EmployeeId = 0;
+        if (userState.User.Identity.IsAuthenticated)
+        {
+            await ConfigureOnSuccessLoginAsync();
+        }
+    }
+
+    private async Task ConfigureOnSuccessLoginAsync()
+    {
+        user = await userManager.FindByNameAsync(userState.User.Identity.Name);
+        id = (await client.GetAllEmplyeesAsync()).FirstOrDefault(e => e.Name == user.Name).Id;
+        AppState.EmployeeId = id;
+    }
+
+
+}

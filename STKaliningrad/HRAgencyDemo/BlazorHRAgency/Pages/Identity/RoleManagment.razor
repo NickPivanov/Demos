@@ -1,0 +1,83 @@
+﻿@page "/rolemanagement"
+@inject RoleManager<IdentityRole> RoleManager
+@inject UserManager<EmployeeIdentity> UserManager
+@inject Access AccessComponent
+@attribute [Authorize]
+
+
+<h3>Users administration:</h3>
+<br />
+@if (users is not null)
+{
+    <table class="table">
+        @foreach (var user in users)
+        {
+            <tr>
+                <td>@user.Name</td>
+                <td>@user.Email</td>
+                <td>
+                    <a class="btn btn-sm btn-primary" @onclick="async () => await EditAccessAsync(user)">Access Rights</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+<Access UserRoleEdit="selectedRoleEdit" 
+        AccessClosed="() => StateHasChanged()" 
+        UserManager="userManager"
+        @ref="accessComponent">
+</Access>
+
+@code {
+    [Parameter]
+    public EventCallback<RoleEdit> OnClickCallback { get; set; }
+
+    RoleManager<IdentityRole> roleManager;
+    UserManager<EmployeeIdentity> userManager;
+
+    private List<EmployeeIdentity> users { get; set; }
+    private RoleEdit selectedRoleEdit { get; set; } = new();
+
+    private Access accessComponent { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        roleManager = RoleManager;
+        userManager = UserManager;
+
+        await InitializeRoles();
+
+        users = userManager.Users.ToList();
+
+        accessComponent = AccessComponent;
+    }
+
+    private async Task InitializeRoles()
+    {
+        if (!roleManager.Roles.ToList().Any())
+        {
+            foreach (var role in new[] { "admin", "employee" })
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+    }
+
+    private async Task EditAccessAsync(EmployeeIdentity user)
+    {
+        var roles = roleManager.Roles.ToList();
+        var userRoles = await userManager.GetRolesAsync(user);
+        RoleEdit roleEdit = new()
+        {
+            UserId = user.Id,
+            UserEmail = user.Email,
+            UserName = user.Name,
+            UserRoles = userRoles,
+            RolesCollection = roles
+        };
+
+        await OnClickCallback.InvokeAsync(selectedRoleEdit = roleEdit);
+        accessComponent.Open();
+    }
+}
