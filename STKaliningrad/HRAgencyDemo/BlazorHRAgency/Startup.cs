@@ -47,6 +47,7 @@ namespace BlazorHRAgency
             services.AddSingleton<AppState>();
             services.AddTransient<Components.Details>();
             services.AddTransient<Components.Access>();
+            services.AddTransient<Services.HRClientService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

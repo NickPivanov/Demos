@@ -1,23 +1,25 @@
 ﻿@page "/"
 @inject UserManager<EmployeeIdentity> UserManager
-@inject IHttpClientFactory httpClientFactory
 
-<div class="badge-primary">
-    <h1>HR Agency app</h1>
+<div class="row justify-content-center">
+    <div class="col-md-6">  
+        <div class="badge-primary" style="width:fit-content">
+            <h1>HR Agency app</h1>
+        </div>
 
+        <AuthorizeView>
+            <Authorized>
+                <a href="/salary/@id">Salary information</a>
+                <br />
+                <a href="/rolemanagement">Users administration</a>
+            </Authorized>
+            <NotAuthorized>
+                Log in or register to view the information
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
 </div>
 
-
-<AuthorizeView>
-    <Authorized>
-        <a href="/salary/@id">Salary information</a>
-        <br />
-        <a href="/rolemanagement">Users administration</a>
-    </Authorized>
-    <NotAuthorized>
-        Log in or register to view the information
-    </NotAuthorized>
-</AuthorizeView>
 
 @code{
 
@@ -30,17 +32,13 @@
     UserManager<EmployeeIdentity> userManager { get; set; }
     private AuthenticationState userState;
     private EmployeeIdentity user;
-    private IHttpClientFactory _httpClientFactory;
-    private HttpClient httpClient;
-    private hrClient client;
+    private HRClientService _hrClientService;
 
     protected override async Task OnInitializedAsync()
     {
         userManager = UserManager;
         userState = await authState;
-        _httpClientFactory = httpClientFactory;
-        httpClient = _httpClientFactory.CreateClient("hrAPI");
-        client = new hrClient("", httpClient);
+        _hrClientService = hrClientService;
 
         appState.EmployeeId = 0;
         if (userState.User.Identity.IsAuthenticated)
@@ -52,9 +50,9 @@
     private async Task ConfigureOnSuccessLoginAsync()
     {
         user = await userManager.FindByNameAsync(userState.User.Identity.Name);
-        id = (await client.GetAllEmplyeesAsync()).FirstOrDefault(e => e.Name == user.Name).Id;
+        id = (await _hrClientService.HrClient
+            .GetAllEmplyeesAsync()).FirstOrDefault(e => e.Name == user.Name).Id;
         AppState.EmployeeId = id;
     }
-
 
 }

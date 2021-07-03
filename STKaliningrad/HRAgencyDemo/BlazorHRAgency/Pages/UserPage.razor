@@ -1,5 +1,4 @@
 ﻿@page "/salary/{id}"
-@inject IHttpClientFactory httpClientFactory
 @attribute [Authorize]
 
 <h3>Employee Page</h3>
@@ -31,26 +30,27 @@ else
                         }
                     </div>
                     <div class="card-footer">
-                        <button class="btn btn-outline-secondary" type="button" @onclick="async () => await RecalculateSalary()">Recalculate salary</button>
+                        <button class="btn btn-outline-secondary" type="button" 
+                                @onclick="async () => await RecalculateSalary()">Recalculate salary</button>
                     </div>
                 </div>
             </div>
 
         </div>
     </div>
-    <br />
+    <br/>
 
     <b>Calculate salary on date: </b>
     <div class="input-group">
         <input type="date" @bind-value="date" />
         <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button" @onclick="@(async () => await CalculateSalaryOnSelectedDate())">Calculate</button>
+            <button class="btn btn-outline-secondary" type="button"
+                    @onclick="@(async () => await CalculateSalaryOnSelectedDate())">Calculate</button>
         </div>
         <div class="input-group-append" style="margin-left: 15px">
             <b class="m-sm-1" style="font-size: 18px">@estimated_salary</b>
         </div>
     </div>
-
 }
 
 
@@ -58,9 +58,7 @@ else
     [Parameter] public string Id { get; set; }
     protected int id { private set; get; }
 
-    private IHttpClientFactory _httpClientFactory;
-    private HttpClient httpClient;
-    private hrClient client;
+    private HRClientService _hrClientService;
 
     private EmployeeBase employee { get; set; }
     private DateTime date { get; set; } = DateTime.Today.AddYears(1);
@@ -68,26 +66,22 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        _httpClientFactory = httpClientFactory;
-        httpClient = _httpClientFactory.CreateClient("hrAPI");
-        client = new hrClient("", httpClient);
-
+        _hrClientService = hrClientService;
         id = int.Parse(Id);
-        employee = await client.GetEmployeeByIdAsync(id);
-
+        employee = await _hrClientService.HrClient.GetEmployeeByIdAsync(id);
     }
 
     private double GetCurrentSalary()
     {
         try
         {
-            return client.GetCurrentSalaryForEmployeeAsync(id).Result;
+            return _hrClientService.HrClient.GetCurrentSalaryForEmployeeAsync(id).Result;
         }
 
         catch
         {
-            client.SetEmployeeCurrentSalaryAsync(id, employee.SalaryBase).Wait();
-            return client.GetCurrentSalaryForEmployeeAsync(id).Result;
+            _hrClientService.HrClient.SetEmployeeCurrentSalaryAsync(id, employee.SalaryBase).Wait();
+            return _hrClientService.HrClient.GetCurrentSalaryForEmployeeAsync(id).Result;
         }
     }
 
@@ -98,18 +92,18 @@ else
             estimated_salary = employee.SalaryBase;
         }
 
-        estimated_salary = await client.CalculateSalaryAsync(id, date.Date);
+        estimated_salary = await _hrClientService.HrClient.CalculateSalaryAsync(id, date.Date);
     }
 
     private Dictionary<string, double> GetSubordinates(int id)
     {
-        var subs = client.GetSubordinatesForEmployeeAsync(id).Result
-            .ToList();
+        var subs = _hrClientService.HrClient.GetSubordinatesForEmployeeAsync(id)
+            .Result.ToList();
 
         Dictionary<string, double> result = new();
         foreach (var e in subs)
         {
-            result.Add(e.Name, client.GetCurrentSalaryForEmployeeAsync(e.Id).Result);
+            result.Add(e.Name, _hrClientService.HrClient.GetCurrentSalaryForEmployeeAsync(e.Id).Result);
         }
 
         return result;
@@ -117,8 +111,8 @@ else
 
     private async Task RecalculateSalary()
     {
-        var salary = await client.CalculateSalaryAsync(id, DateTime.Today);
-        await client.SetEmployeeCurrentSalaryAsync(id, salary);
+        var salary = await _hrClientService.HrClient.CalculateSalaryAsync(id, DateTime.Today);
+        await _hrClientService.HrClient.SetEmployeeCurrentSalaryAsync(id, salary);
         StateHasChanged();
     }
 }

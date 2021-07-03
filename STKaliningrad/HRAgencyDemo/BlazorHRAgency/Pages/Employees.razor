@@ -1,5 +1,4 @@
 ﻿@page "/employees"
-@inject IHttpClientFactory httpClientFactory
 @inject Details EmployeeDetails
 @attribute [Authorize(Roles ="admin")]
 
@@ -19,11 +18,9 @@ else
                 <th>Subordinates</th>
                 <th>Salary</th>
                 <th>Actions</th>
-
             </tr>
         </thead>
         <tbody>
-
             @foreach (var employee in employees)
             {
                 <tr data-bind="@employee">
@@ -33,7 +30,7 @@ else
                     @if (employee.Group != EmployeeGroup.Employees)
                     {
                         <td>
-                            <a  href="/subordinates/@employee.Id">@GetSubordinates(employee.Id).Count</a>
+                            <a href="/subordinates/@employee.Id">@GetSubordinates(employee.Id).Count</a>
                         </td>
                     }
                     else
@@ -41,7 +38,6 @@ else
                         <td>-</td>
                     }
                     <td>@GetCurrentSalaryForEmployee(employee.Id)</td>
-
                     <td>
                         <button class="btn btn-sm btn-outline-primary"
                                 type="button" data-toggle="tooltip" data-placement="bottom" title="Edit"
@@ -70,7 +66,7 @@ else
     </div>
 }
 
-<Details clientService="@client" 
+<Details clientService="@_hrClientService.HrClient" 
          SelectedEmployee="@selectedEmployee"
          @ref="employeeDetails"
          CurrentSalary="selectedEmployeeCurrentSalary"
@@ -81,9 +77,7 @@ else
     [Parameter]
     public EventCallback<EmployeeBase> OnClickCallback { get; set; }
 
-    private IHttpClientFactory _httpClientFactory;
-    private HttpClient httpClient;
-    private hrClient client;
+    private HRClientService _hrClientService;
     private Details employeeDetails { get; set; }
     private EmployeeBase selectedEmployee { get; set; } = new();
     private List<EmployeeBase> selectedSubordinates { get; set; }
@@ -95,36 +89,33 @@ else
     protected override async Task OnInitializedAsync()
     {
         employeeDetails = EmployeeDetails;
-        _httpClientFactory = httpClientFactory;
-        httpClient = _httpClientFactory.CreateClient("hrAPI");
-        client = new hrClient("", httpClient);
-
+        _hrClientService = hrClientService;
         await GetEmployeesDataAsync();
     }
 
     private async Task GetEmployeesDataAsync()
     {
-        employees = (await client.GetAllEmplyeesAsync()).ToList();
-        totalPersonelExpenses = await client.GetTotalPersonelExpensesAsync();
+        employees = (await _hrClientService.HrClient.GetAllEmplyeesAsync()).ToList();
+        totalPersonelExpenses = await _hrClientService.HrClient.GetTotalPersonelExpensesAsync();
     }
 
     private List<string> GetSubordinates(int id)
     {
-        var subs = client.GetSubordinatesForEmployeeAsync(id).Result;
+        var subs = _hrClientService.HrClient.GetSubordinatesForEmployeeAsync(id).Result;
         selectedSubordinates = subs.ToList();
         return subs.Select(n => n.Name).ToList();
     }
 
     private double GetCurrentSalaryForEmployee(int id)
     {
-        var result = client.GetCurrentSalaryForEmployeeAsync(id).Result;
+        var result = _hrClientService.HrClient.GetCurrentSalaryForEmployeeAsync(id).Result;
         selectedEmployeeCurrentSalary = result;
         return result;
     }
 
     private async Task DeleteEmployeeAsync(int id)
     {
-        await client.DeleteEmployeeAsync(id);
+        await _hrClientService.HrClient.DeleteEmployeeAsync(id);
         StateHasChanged();
     }
 

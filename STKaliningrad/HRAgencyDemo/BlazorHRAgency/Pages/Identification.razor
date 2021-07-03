@@ -1,7 +1,6 @@
 ﻿@page "/Identification"
 @attribute [Authorize]
 @inject UserManager<EmployeeIdentity> UserManager
-@inject IHttpClientFactory httpClientFactory
 @inject NavigationManager NavigationManager
 
 
@@ -42,7 +41,6 @@ else
 }
 
 
-
 @code {
     [CascadingParameter]
     private Task<AuthenticationState> authState { get; set; }
@@ -50,9 +48,7 @@ else
     UserManager<EmployeeIdentity> userManager { get; set; }
     private AuthenticationState userState;
     private EmployeeIdentity user;
-    private IHttpClientFactory _httpClientFactory;
-    private HttpClient httpClient;
-    private hrClient client;
+    private HRClientService _hrClientService;
     private bool IsEmployed;
 
     private Data.EmployeeModel employeeModel { get; set; } = new();
@@ -62,18 +58,16 @@ else
     {
         userManager = UserManager;
         userState = await authState;
-        _httpClientFactory = httpClientFactory;
-        httpClient = _httpClientFactory.CreateClient("hrAPI");
-        client = new hrClient("", httpClient);
+        _hrClientService = hrClientService;
 
         user = await userManager.FindByNameAsync(userState.User.Identity.Name);
         employeeModel.Name = user.Name;
-        IsEmployed = (await client.GetAllEmplyeesAsync()).Any(e => e.Name == user.Name);
+        IsEmployed = (await _hrClientService.HrClient.GetAllEmplyeesAsync()).Any(e => e.Name == user.Name);
     }
 
     private async Task CreateEmployee()
     {
-        var e = await client.AddEmployeeAsync(user.Name, employeeModel.Group, employeeModel.EmployedDate);
+        var e = await _hrClientService.HrClient.AddEmployeeAsync(user.Name, employeeModel.Group, employeeModel.EmployedDate);
         NavigationManager.NavigateTo($"/{e.Id}");
     }
 }

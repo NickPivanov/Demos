@@ -1,6 +1,5 @@
 ﻿@page "/subordinates/{id}"
-@inject IHttpClientFactory httpClientFactory
-@attribute [Authorize]
+@attribute [Authorize(Roles ="admin")]
 
 
 @if (selectedEmployee is not null)
@@ -45,28 +44,24 @@
     [Parameter] public string Id { get; set; }
     protected int id { private set; get; }
 
-    private IHttpClientFactory _httpClientFactory;
-    private HttpClient httpClient;
-    private hrClient client;
+    private HRClientService _hrClientService;
 
     private EmployeeBase selectedEmployee { get; set; }
     private Dictionary<EmployeeBase, bool> SubsDictionary { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        _httpClientFactory = httpClientFactory;
-        httpClient = _httpClientFactory.CreateClient("hrAPI");
-        client = new hrClient("", httpClient);
+        _hrClientService = hrClientService;
 
         id = int.Parse(Id);
-        selectedEmployee = await client.GetEmployeeByIdAsync(id);
-        await FillDictionaryAsync();
+        selectedEmployee = await _hrClientService.HrClient.GetEmployeeByIdAsync(id);
+        await FillSubsDictionaryAsync();
     }
 
-    private async Task FillDictionaryAsync()
+    private async Task FillSubsDictionaryAsync()
     {
-        var employees = (await client.GetAllEmplyeesAsync()).ToList();
-        var subordinates = (await client.GetSubordinatesForEmployeeAsync(selectedEmployee.Id)).ToList();
+        var employees = (await _hrClientService.HrClient.GetAllEmplyeesAsync()).ToList();
+        var subordinates = (await _hrClientService.HrClient.GetSubordinatesForEmployeeAsync(selectedEmployee.Id)).ToList();
         foreach (var item in subordinates)
         {
             SubsDictionary.Add(item, true);
@@ -82,7 +77,6 @@
              select e).ToList() :
              employees;
 
-
         foreach (var item in employees)
         {
             SubsDictionary.Add(item, false);
@@ -94,13 +88,13 @@
     {
         var key = SubsDictionary.First(n => n.Key.Id == subordinate_id).Key;
         SubsDictionary[key] = true;
-        await client.AssignSubordinateForEmployeeAsync(selectedEmployee.Id, subordinate_id);
+        await _hrClientService.HrClient.AssignSubordinateForEmployeeAsync(selectedEmployee.Id, subordinate_id);
     }
 
     private async Task RemoveSubordinateAsync(int subordinate_id)
     {
         var key = SubsDictionary.First(n => n.Key.Id == subordinate_id).Key;
         SubsDictionary[key] = false;
-        await client.RemoveSubordinateForEmployeeAsync(selectedEmployee.Id, subordinate_id);
+        await _hrClientService.HrClient.RemoveSubordinateForEmployeeAsync(selectedEmployee.Id, subordinate_id);
     }
 }
