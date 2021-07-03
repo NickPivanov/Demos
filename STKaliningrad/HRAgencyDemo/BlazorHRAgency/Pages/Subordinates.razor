@@ -70,18 +70,12 @@
         employees = (from e in employees
                      where e.Name != selectedEmployee.Name
                      select e).ToList();
-        employees = subordinates.Any() ?
-            (from e in employees
-             from s in subordinates
-             where e.Name != s.Name
-             select e).ToList() :
-             employees;
 
         foreach (var item in employees)
         {
-            SubsDictionary.Add(item, false);
+            if(!SubsDictionary.Keys.Any(k => k.Name == item.Name))
+                SubsDictionary.Add(item, false);
         }
-
     }
 
     private async Task AssignSubordinateAsync(int subordinate_id)
