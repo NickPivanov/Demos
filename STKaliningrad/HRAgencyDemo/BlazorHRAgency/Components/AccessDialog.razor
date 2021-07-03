@@ -39,12 +39,12 @@
 
 @code {
     [Parameter]
-    public RoleEdit UserRoleEdit { get; set; }
+    public RoleEditModel UserRoleEdit { get; set; }
     [Parameter]
-    public EventCallback AccessClosed { get; set; }
+    public EventCallback AccessDialogClosed { get; set; }
     [Parameter] public UserManager<EmployeeIdentity> UserManager { get; set; }
 
-    private RoleEdit userRoleEdit { get; set; }
+    private RoleEditModel userRoleEdit { get; set; }
     private List<string> rolesAdded { get; set; } = new();
 
     public Guid Guid = Guid.NewGuid();
@@ -72,7 +72,7 @@
         ModalClass = "";
         Showbackdrop = false;
         StateHasChanged();
-        AccessClosed.InvokeAsync();
+        AccessDialogClosed.InvokeAsync();
     }
 
     private bool HasRole(string roleName)

@@ -1,5 +1,5 @@
 ﻿@page "/employees"
-@inject Details EmployeeDetails
+@inject DetailsDialog EmployeeDetails
 @attribute [Authorize(Roles ="admin")]
 
 @if (employees is null)
@@ -66,19 +66,19 @@ else
     </div>
 }
 
-<Details clientService="@_hrClientService.HrClient" 
+<DetailsDialog clientService="@_hrClientService.HrClient" 
          SelectedEmployee="@selectedEmployee"
          @ref="employeeDetails"
          CurrentSalary="selectedEmployeeCurrentSalary"
-         EmployeeDetailsClosed="@(async () => await GetEmployeesDataAsync())">
-</Details>
+         EmployeeDetailsDialogClosed="@(async () => await GetEmployeesDataAsync())">
+</DetailsDialog>
 
 @code {
     [Parameter]
     public EventCallback<EmployeeBase> OnClickCallback { get; set; }
 
     private HRClientService _hrClientService;
-    private Details employeeDetails { get; set; }
+    private DetailsDialog employeeDetails { get; set; }
     private EmployeeBase selectedEmployee { get; set; } = new();
     private List<EmployeeBase> selectedSubordinates { get; set; }
     private double selectedEmployeeCurrentSalary = 0;

@@ -1,7 +1,7 @@
 ﻿@page "/rolemanagement"
 @inject RoleManager<IdentityRole> RoleManager
 @inject UserManager<EmployeeIdentity> UserManager
-@inject Access AccessComponent
+@inject AccessDialog AccessComponent
 @attribute [Authorize]
 
 
@@ -23,23 +23,23 @@
     </table>
 }
 
-<Access UserRoleEdit="selectedRoleEdit" 
-        AccessClosed="() => StateHasChanged()" 
+<AccessDialog UserRoleEdit="selectedRoleEdit" 
+        AccessDialogClosed="() => StateHasChanged()" 
         UserManager="userManager"
         @ref="accessComponent">
-</Access>
+</AccessDialog>
 
 @code {
     [Parameter]
-    public EventCallback<RoleEdit> OnClickCallback { get; set; }
+    public EventCallback<RoleEditModel> OnClickCallback { get; set; }
 
     RoleManager<IdentityRole> roleManager;
     UserManager<EmployeeIdentity> userManager;
 
     private List<EmployeeIdentity> users { get; set; }
-    private RoleEdit selectedRoleEdit { get; set; } = new();
+    private RoleEditModel selectedRoleEdit { get; set; } = new();
 
-    private Access accessComponent { get; set; }
+    private AccessDialog accessComponent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -68,7 +68,7 @@
     {
         var roles = roleManager.Roles.ToList();
         var userRoles = await userManager.GetRolesAsync(user);
-        RoleEdit roleEdit = new()
+        RoleEditModel roleEdit = new()
         {
             UserId = user.Id,
             UserEmail = user.Email,

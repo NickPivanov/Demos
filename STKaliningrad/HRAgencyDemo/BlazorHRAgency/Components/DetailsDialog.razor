@@ -68,7 +68,7 @@
     [Parameter]
     public EmployeeBase SelectedEmployee { get; set; }
     [Parameter]
-    public EventCallback EmployeeDetailsClosed { get; set; }
+    public EventCallback EmployeeDetailsDialogClosed { get; set; }
     [Parameter]
     public hrClient clientService { get; set; }
     [Parameter]
@@ -108,7 +108,7 @@
         ModalClass = "";
         Showbackdrop = false;
         StateHasChanged();
-        EmployeeDetailsClosed.InvokeAsync();
+        EmployeeDetailsDialogClosed.InvokeAsync();
     }
 
     private async Task SaveChanges()
