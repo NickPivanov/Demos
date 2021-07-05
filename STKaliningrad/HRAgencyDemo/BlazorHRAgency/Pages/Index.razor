@@ -7,11 +7,15 @@
             <h1>HR Agency app</h1>
         </div>
 
-        <AuthorizeView>
+        <AuthorizeView Roles="admin">
+            <Authorized>
+                <a href="/rolemanagement">Users administration</a>
+                <br />
+            </Authorized>
+        </AuthorizeView>
+        <AuthorizeView Roles="employee, admin">
             <Authorized>
                 <a href="/salary/@id">Salary information</a>
-                <br />
-                <a href="/rolemanagement">Users administration</a>
             </Authorized>
             <NotAuthorized>
                 Log in or register to view the information
