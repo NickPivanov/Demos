@@ -27,7 +27,7 @@ namespace AccountsDepartment
 
         public override void SetManagementRate()
         {
-            var subordinates = (_salesman as Salesman).Subordinates;
+            var subordinates = (_salesman as Salesman).Subordinates.ToList();
             double totalSubordinatesSalary = 0;
             foreach (var s in subordinates)
             {

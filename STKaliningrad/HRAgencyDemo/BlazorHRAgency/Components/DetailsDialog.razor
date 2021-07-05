@@ -114,6 +114,7 @@
     private async Task SaveChanges()
     {
         SelectedEmployee.Name = employeeModel.Name;
+        SelectedEmployee.Group = employeeModel.Group;
         await clientService.UpdateEmployeeAsync(SelectedEmployee);
         Close();
     }

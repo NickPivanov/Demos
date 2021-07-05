@@ -19,10 +19,5 @@ namespace AccountsDepartment.Services
             Salary.ExpRate = (timeIndex * 0.03 * _employee.SalaryBase) <= maxExpRate ?
                (timeIndex * 0.03 * _employee.SalaryBase) : maxExpRate;
         }
-
-        public override void SetManagementRate()
-        {
-            Salary.ManagmentRate = 0;
-        }
     }
 }

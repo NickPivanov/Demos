@@ -18,6 +18,9 @@ namespace AccountsDepartment
         }
         
         public abstract void SetExpRate(DateTime date);
-        public abstract void SetManagementRate();
+        public virtual void SetManagementRate()
+        {
+            Salary.ManagmentRate = 0;
+        }
     }
 }

@@ -27,17 +27,13 @@ namespace AccountsDepartment
 
         public override void SetManagementRate()
         {
-            var subordinates = (_manager as Manager).Subordinates.Where(n => n.Group == EmployeeGroup.Employees);
+            var subordinates = (_manager as Manager).Subordinates.Where(n => n.Group == EmployeeGroup.Employees).ToList();
             double totalSubordinatesSalary = 0;
             foreach (var s in subordinates)
             {
                 totalSubordinatesSalary += PersonelExpenses.Where(p => p.Employee.Id == s.Id).FirstOrDefault().CurrentSalary;
             }
             Salary.ManagmentRate = totalSubordinatesSalary * 0.005;
-            //коэффициент зависит от з/п employee. Надо либо рассчитывать для каждого з/п,
-            //либо где-то вносить в БД текущую з/п и через сервис здесь получать эти данные
-            //Однако как тогда рассчитывать коэффициент на конкретную дату?
-
         }
     }
 }
