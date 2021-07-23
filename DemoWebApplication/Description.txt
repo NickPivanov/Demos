@@ -1,0 +1,4 @@
+Demo Project that consists of:
+- Data access example layer using EntityFrameworkCore
+- OpenAPI project as mediator between data access and UI
+- BlazorServer UI project
