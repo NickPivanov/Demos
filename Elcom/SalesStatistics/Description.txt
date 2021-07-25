@@ -1,5 +1,5 @@
 Project contains of:
-- DataAccess layer using EntityFrameworkCore
+- DataAccess layer using EntityFrameworkCore.
 Clients were supposed to have readonly data for this app, so there is no CRUD operations.
 - Domain layer with entity classes
 - WPF desktop client. Has a Host example to run the app (that also solves some problems with migrations).
