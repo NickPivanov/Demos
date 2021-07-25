@@ -1,0 +1,10 @@
+Project contains of:
+- DataAccess layer using EntityFrameworkCore
+Clients were supposed to have readonly data for this app, so there is no CRUD operations.
+- Domain layer with entity classes
+- WPF desktop client. Has a Host example to run the app (that also solves some problems with migrations).
+Has app config file in json. Has logging via Serilog. 
+Has data filtering and pagination.
+Shows how to bind DataGridColumn value to Dictionary.
+Shows how to change data grid cell background depending on cell content value, when this value changes dynamically.
+(Spoiler - using IValueConverter)
