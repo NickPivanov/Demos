@@ -8,3 +8,4 @@ Has data filtering and pagination.
 Shows how to bind DataGridColumn value to Dictionary.
 Shows how to change data grid cell background depending on cell content value, when this value changes dynamically.
 (Spoiler - using IValueConverter)
+Shows an example of data export from DataGrid to Excel file.
