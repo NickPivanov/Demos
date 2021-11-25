@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace DemoConsoleReaderTests
 {
-    public class TxtReaderTest
+    public class TxtReaderTests
     {
 
         [Fact]
@@ -52,16 +52,15 @@ namespace DemoConsoleReaderTests
         public void CanCreateFile()
         {
             //arrange
-            var data = new[] { "line1", "line2" }; ;
-            var path = "test.txt";
+            var data = new[] { "line1", "line2" };
 
             var mockStream = new Mock<IStreamWrap>();
-            mockStream.Setup(s => s.WriteLine(path, It.IsAny<string>(), false)).Verifiable();
+            mockStream.Setup(s => s.WriteLine(It.IsAny<string>(), It.IsAny<string>(), false)).Verifiable();
             //act
             var txtReader = new TxtReader(mockStream.Object);
-            txtReader.CreateFile(path, data);
+            txtReader.CreateFile(It.IsAny<string>(), data);
             //assert
-            mockStream.Verify(x => x.WriteLine(path, It.IsAny<string>(), false), Times.Exactly(2));
+            mockStream.Verify(x => x.WriteLine(It.IsAny<string>(), It.IsAny<string>(), false), Times.Exactly(2));
         }
     }
 }

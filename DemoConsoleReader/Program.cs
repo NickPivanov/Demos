@@ -8,8 +8,8 @@ using System.Collections.Generic;
 
 Console.WriteLine("DemoConsoleReader");
 
-IFileReader jsonReader = new JsonReader();
-IFileReader txtReader = new TxtReader(new StreamWrapper());
+IFileReader jsonReader = new JsonReader(new StreamWrapperJson());
+IFileReader txtReader = new TxtReader(new StreamWrapperTxt());
 IFileReader xmlFileReader = new XmlFileReader();
 
 //text
