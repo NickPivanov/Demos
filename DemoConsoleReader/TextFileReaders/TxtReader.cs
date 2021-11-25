@@ -7,34 +7,26 @@ namespace DemoConsoleReader.TextFileReaders
 {
     public class TxtReader : IFileReader
     {
+        private readonly IStreamWrap _streamWrap;
+        public TxtReader(IStreamWrap streamWrap)
+        {
+            _streamWrap = streamWrap;
+        }
+
         public void CreateFile(string path, object[] data)
         {
-            using (StreamWriter sw = new StreamWriter(path, append: false))
-            {
-                foreach (string s in data)
-                    sw.WriteLine(s);
-            }
+            foreach (string s in data)
+                _streamWrap.WriteLine(path, s, false);
         }
 
         public void AddDataToFile(string path, object data)
         {
-            using (StreamWriter sw = new StreamWriter(path, append: true))
-            {
-                sw.WriteLine(data as string);
-            }
+            _streamWrap.WriteLine(path, data as string, true);
         }
 
         public IEnumerable<object> ReadFile<T>(string path)
         {
-            List<object> result = new();
-            using (StreamReader sr = new StreamReader(path, Encoding.Default))
-            {
-                string line;
-                while ((line = sr.ReadLine()) != null)
-                    result.Add(line);
-            }
-
-            return result;
+            return _streamWrap.ReadLine(path);
         }
     }
 }

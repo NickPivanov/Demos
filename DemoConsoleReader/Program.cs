@@ -9,7 +9,7 @@ using System.Collections.Generic;
 Console.WriteLine("DemoConsoleReader");
 
 IFileReader jsonReader = new JsonReader();
-IFileReader txtReader = new TxtReader();
+IFileReader txtReader = new TxtReader(new StreamWrapper());
 IFileReader xmlFileReader = new XmlFileReader();
 
 //text
