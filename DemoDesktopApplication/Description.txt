@@ -1,4 +1,0 @@
-Demo Project that consists of:
-- Data access example layer using LinqToDb
-- Data access example layer using EntityFrameworkCore
-- WPF desktop client app with MVVM-pattern
