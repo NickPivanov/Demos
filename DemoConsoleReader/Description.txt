@@ -1,1 +1,0 @@
-Demo Console app for reading\writing text, json, xml files.
