@@ -22,5 +22,5 @@ public interface IShapeAreaService
     /// <param name="sideB"></param>
     /// <param name="sideC"></param>
     /// <returns></returns>
-    public double GetTriangleArea(double sideA, double sideB, double sideC);
+    public double GetTriangleArea(double legA, double legB, double hypotenuse);
 }

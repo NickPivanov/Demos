@@ -15,8 +15,8 @@ public sealed class ShapeAreaService : IShapeAreaService
         return new Circle(radius).GetShapeArea();
     }
 
-    public double GetTriangleArea(double sideA, double sideB, double sideC)
+    public double GetTriangleArea(double legA, double legB, double hypotenuse)
     {
-        return new Triangle(sideA, sideB, sideC).GetShapeArea();
+        return new Triangle(legA, legB, hypotenuse).GetShapeArea();
     }
 }
