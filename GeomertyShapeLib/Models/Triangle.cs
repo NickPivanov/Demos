@@ -1,20 +1,20 @@
 ﻿namespace GeomertyShapeLib.Models;
 
-public sealed class Triangle : ShapeBase
+public class Triangle : ShapeBase
 {
-    public Triangle(double sideA, double sideB, double sideC)
+    public Triangle(double legA, double legB, double hypotenuse)
     {
-        SideA = sideA;
-        SideB = sideB;
-        SideC = sideC;
+        LegA = legA;
+        LegB = legB;
+        Hypotenuse = hypotenuse;
     }
 
-    public double SideA { get; set; }
-    public double SideB { get; set; }
-    public double SideC { get; set; }
+    public double LegA { get; set; }
+    public double LegB { get; set; }
+    public double Hypotenuse { get; set; }
 
     public override double GetShapeArea()
     {
-        return Math.Round(SideA * SideB * SideC, 2, MidpointRounding.AwayFromZero);
+        return Math.Round(LegA * LegB * Hypotenuse, 2, MidpointRounding.AwayFromZero);
     }
 }

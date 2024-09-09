@@ -1,6 +1,6 @@
 ﻿namespace GeomertyShapeLib.Models;
 
-public sealed class Circle : ShapeBase
+public class Circle : ShapeBase
 {
     public double Radius { get; set; }
 
