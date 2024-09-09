@@ -1,1 +1,0 @@
-Demo Console app for reading data from some online service
