@@ -50,4 +50,22 @@ public class ShapeAreaServiceTests
         var decorator = new TriangleDecorator(triangle);
         Assert.True(decorator.IsRightAngled());
     }
+
+    [Theory]
+    [InlineData(-1)]
+    [InlineData(0)]
+    public void GetCircleArea_ThrowsException(double radius)
+    {
+        Assert.Throws<Exception>(() => _shapeAreaService.GetCircleArea(radius));
+    }
+
+    [Theory]
+    [InlineData(-3, 3, 3)]
+    [InlineData(3, -4, 5)]
+    [InlineData(6, 7, -8)]
+    [InlineData(0, 1, -3)]
+    public void GetTriangleArea_ThrowsException(double legA, double legB, double hypotenuse)
+    {
+        Assert.Throws<Exception>(() => _shapeAreaService.GetTriangleArea(legA, legB, hypotenuse));
+    }
 }
