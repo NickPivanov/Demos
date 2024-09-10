@@ -9,6 +9,7 @@ public class ShapeAreaServiceTests
     private readonly IShapeAreaService _shapeAreaService;
     private Circle _demoCircle;
     private Triangle _demoTriangle;
+
     public ShapeAreaServiceTests()
     {
         _shapeAreaService = new ShapeAreaService();
@@ -35,7 +36,18 @@ public class ShapeAreaServiceTests
     [Fact]
     public void Can_GetShapeArea()
     {
-        var area = _shapeAreaService.GetShapeArea(_demoCircle);
-        Assert.Equal(314.16, area);
+        var areaCircle = _shapeAreaService.GetShapeArea(_demoCircle);
+        var areaTriangle = _shapeAreaService.GetShapeArea(_demoTriangle);
+        Assert.Equal(314.16, areaCircle);
+        Assert.Equal(1000, areaTriangle);
+    }
+
+    [Theory]
+    [InlineData(3, 4, 5)]
+    public void Is_TriangleRightAngled(double legA, double legB, double hypotenuse)
+    {
+        var triangle = new Triangle(legA, legB, hypotenuse);
+        var decorator = new TriangleDecorator(triangle);
+        Assert.True(decorator.IsRightAngled());
     }
 }

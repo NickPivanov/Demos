@@ -1,11 +1,12 @@
 ﻿namespace GeomertyShapeLib.Models;
 
-public class TriangleDecorator
+public class TriangleDecorator : Triangle
 {
-    private readonly Triangle _triangle;
     public TriangleDecorator(Triangle triangle)
     {
-        _triangle = triangle;
+        LegA = triangle.LegA;
+        LegB = triangle.LegB;
+        Hypotenuse = triangle.Hypotenuse;
     }
 
     /// <summary>
@@ -14,6 +15,6 @@ public class TriangleDecorator
     /// <returns></returns>
     public bool IsRightAngled()
     {
-        return Math.Pow(_triangle.Hypotenuse, 2) == Math.Pow(_triangle.LegA, 2) + Math.Pow(_triangle.LegB, 2);
+        return Math.Pow(Hypotenuse, 2) == Math.Pow(LegA, 2) + Math.Pow(LegB, 2);
     }
 }

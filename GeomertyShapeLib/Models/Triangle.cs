@@ -9,6 +9,9 @@ public class Triangle : ShapeBase
         Hypotenuse = hypotenuse;
     }
 
+    protected Triangle()
+    { }
+
     public double LegA { get; set; }
     public double LegB { get; set; }
     public double Hypotenuse { get; set; }
