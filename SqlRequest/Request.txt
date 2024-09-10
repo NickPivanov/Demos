@@ -1,0 +1,11 @@
+﻿SELECT product.Name, category.Name AS Category 
+FROM dbo.[Products] AS product
+LEFT JOIN 
+--
+(SELECT categories.Name, mapping.ProductId 
+	FROM dbo.[SomeMappingTable] AS mapping
+	INNER JOIN dbo.[Categories] AS categories ON mapping.CategoryId = categories.Id) AS category
+--
+ON product.Id=category.ProductId
+--
+ORDER BY product.Name
