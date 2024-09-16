@@ -18,6 +18,8 @@ public class Triangle : ShapeBase
 
     public override double GetShapeArea()
     {
-        return Math.Round(LegA * LegB * Hypotenuse, 2, MidpointRounding.AwayFromZero);
+        var p = (LegA + LegB + Hypotenuse) / 2;
+        var height = 2 * Math.Sqrt(p * (p - LegA)*(p - LegB)*(p - Hypotenuse))/LegA;
+        return Math.Round(LegA * height / 2, 2, MidpointRounding.AwayFromZero);
     }
 }

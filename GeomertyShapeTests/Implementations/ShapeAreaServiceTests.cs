@@ -26,7 +26,7 @@ public class ShapeAreaServiceTests
     }
 
     [Theory]
-    [InlineData(3, 3, 3, 27)]
+    [InlineData(3, 3, 3, 3.9)]
     public void Can_GetTriangleArea(double legA, double legB, double hypotenuse, double result)
     {
         var area = _shapeAreaService.GetTriangleArea(legA, legB, hypotenuse);
